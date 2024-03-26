@@ -87,30 +87,13 @@ static int gTestID = 1;
 
 #define INDICATOR_COLORS_SIZE INDICATOR_COLORS_SIZE_1
 
-#define DS_ASSERT_AUTO_TERM_NUMERICAL(value, comparison){\
-    if(value != comparison){\
-        UT_LOG("\n In %s Comparison: [%d = %d]\n", __FUNCTION__, value, comparison);\
-        dsFPTerm();\
-        UT_ASSERT_EQUAL(value, comparison);\
-    }\
-}\
-
-#define DS_ASSERT_AUTO_TERM_STRING(value, comparison){\
-    if(strcmp(value, comparison) != 0){\
-        UT_LOG("\n In %s Comparison: [%s = %s]\n", __FUNCTION__, value, comparison);\
-        dsFPTerm();\
-        UT_ASSERT_EQUAL(value, comparison);\
-    }\
-}\
-
-
 #define enableFPDIndicators(){\
     dsError_t result;\
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)\
     {\
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);\
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);\
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);\
+        UT_ASSERT_EQUAL(result, dsERR_NONE);\
     }\
 }\
 
@@ -119,7 +102,7 @@ static int gTestID = 1;
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)\
     {\
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_OFF);\
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);\
+        UT_ASSERT_EQUAL(result, dsERR_NONE);\
     }\
 }\
 
@@ -201,7 +184,7 @@ void test_l1_dsFPD_negative_dsFPInit(void)
 
     // Variation 02: Call dsFPInit() again - attempt to initialize an already initialized interface
     result = dsFPInit();
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_ALREADY_INITIALIZED);
+    UT_ASSERT_EQUAL(result, dsERR_ALREADY_INITIALIZED);
 
     // Variation 03: Call dsFPTerm() - terminate the interface
     result = dsFPTerm();
@@ -336,16 +319,16 @@ void test_l1_dsFPD_positive_dsSetFPState (void)
     
     // Step 02: Call dsSetFPState() with valid inputs
     result = dsSetFPState(dsFPD_INDICATOR_POWER, dsFPD_STATE_OFF);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     
     // Step 03: Call dsSetFPState() and loop through all valid indicators from kIndicators
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_OFF);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
     
     // Step 04: Terminate
@@ -395,13 +378,13 @@ void test_l1_dsFPD_negative_dsSetFPState (void)
 
     // Step 03: Call dsSetFPState() with an invalid eIndicator value
     result = dsSetFPState(dsFPD_INDICATOR_MAX, dsFPD_STATE_OFF);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     
     // Step 04: Loop through all valid indicators from kIndicators with an invalid state value
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_MAX);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     }
 
     // Step 05: Loop through the indicators from the diff of kIndicators and dsFPDIndicator_t
@@ -420,7 +403,7 @@ void test_l1_dsFPD_negative_dsSetFPState (void)
         if (!isIndicatorValid)
         {
             result = dsSetFPState((dsFPDIndicator_t)i, dsFPD_STATE_OFF);
-            DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+            UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
         }
     }
 
@@ -473,9 +456,9 @@ void test_l1_dsFPD_positive_dsSetFPBlink (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsSetFPBlink(kIndicators[i].id, 500, 10);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
 
 
@@ -540,18 +523,18 @@ void test_l1_dsFPD_negative_dsSetFPBlink (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
 
         result = dsSetFPBlink(kIndicators[i].id, 20000, 10);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
         result = dsSetFPBlink(kIndicators[i].id, 500, 200);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     }
 
     // Variation 06: Pass an invalid eIndicator parameter to dsSetFPBlink()
     result = dsSetFPBlink(dsFPD_INDICATOR_MAX, 500, 10);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
 
     // Variation 07: Set all valid indicators to dsFPD_STATE_OFF using dsSetFPState()
@@ -561,7 +544,7 @@ void test_l1_dsFPD_negative_dsSetFPBlink (void)
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsSetFPBlink(kIndicators[i].id, 500, 10);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+        UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
     }
 
     // Variation 09: Terminate with dsFPTerm()
@@ -616,14 +599,14 @@ void test_l1_dsFPD_positive_dsSetFPBrightness (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         
         result = dsSetFPBrightness(kIndicators[i].id, 0);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsSetFPBrightness(kIndicators[i].id, 50);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsSetFPBrightness(kIndicators[i].id, 100);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
 
     // Step 04: Terminate with dsFPTerm()
@@ -683,28 +666,28 @@ void test_l1_dsFPD_negative_dsSetFPBrightness (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsSetFPBrightness(kIndicators[i].id, 200);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     }
 
     // Variation 05: Pass an invalid eIndicator parameter to dsSetFPBrightness()
     result = dsSetFPBrightness(dsFPD_INDICATOR_MAX, 50);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     
 
     // Variation 06: Set all valid indicators to dsFPD_STATE_OFF using dsSetFPState()
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_OFF);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
 
     // Variation 07: Call dsSetFPBrightness() and loop through all valid indicators from kIndicators
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsSetFPBrightness(kIndicators[i].id, 50);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+        UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
     }
 
     // Variation 08: Terminate with dsFPTerm()
@@ -763,13 +746,13 @@ void test_l1_dsFPD_positive_dsGetFPBrightness (void)
 
     // Step 03: Call dsGetFPBrightness() with specific valid indicator and store the value
     result = dsGetFPBrightness(dsFPD_INDICATOR_POWER, &brightness_power_indicator);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsGetFPBrightness() and loop through all valid indicators from kIndicators
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsGetFPBrightness(kIndicators[i].id, &brightness_all_indicators[i]);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
 
         if (kIndicators[i].id == dsFPD_INDICATOR_POWER)
         {
@@ -778,7 +761,7 @@ void test_l1_dsFPD_positive_dsGetFPBrightness (void)
     }
 
     // Step 05: Compare the two retrieved brightness values from step 02 and step 03 for dsFPD_INDICATOR_POWER
-    DS_ASSERT_AUTO_TERM_NUMERICAL(brightness_power_indicator, brightness_all_indicators[indicator_power_index]);
+    UT_ASSERT_EQUAL(brightness_power_indicator, brightness_all_indicators[indicator_power_index]);
 
     // Step 06: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -840,29 +823,29 @@ void test_l1_dsFPD_negative_dsGetFPBrightness (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
 
         result = dsGetFPBrightness(kIndicators[i].id, NULL);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     }
 
     // Step 05: Call dsGetFPBrightness() with an invalid eIndicator value
     result = dsGetFPBrightness(dsFPD_INDICATOR_MAX, &brightness);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
 
     // Step 06: Set all valid indicators to dsFPD_STATE_OFF using dsSetFPState()
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_OFF);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
 
     // Step 07: Call dsGetFPBrightness() and loop through all valid indicators
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsGetFPBrightness(kIndicators[i].id, &brightness);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+        UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
     }
 
     // Step 08: Terminate with dsFPTerm()
@@ -915,22 +898,22 @@ void test_l1_dsFPD_positive_dsGetFPState (void)
 
     // Step 02: Call dsGetFPState() with valid eIndicator and state parameters
     result = dsGetFPState(dsFPD_INDICATOR_POWER, &stateForPower);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsGetFPState() once again for dsFPD_INDICATOR_POWER and store results
     result = dsGetFPState(dsFPD_INDICATOR_POWER, &stateForComparison);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsGetFPState() and loop through all valid indicators from kIndicators
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         dsFPDState_t currentState;
         result = dsGetFPState(kIndicators[i].id, &currentState);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
 
     // Step 05: Compare the state retrieved in step 02 and 03
-    DS_ASSERT_AUTO_TERM_NUMERICAL(stateForPower, stateForComparison);
+    UT_ASSERT_EQUAL(stateForPower, stateForComparison);
 
     // Step 06: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -986,13 +969,13 @@ void test_l1_dsFPD_negative_dsGetFPState (void)
 
     // Step 03: Call dsGetFPState() with an invalid eIndicator value
     result = dsGetFPState(dsFPD_INDICATOR_MAX, &state);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 04: Call dsGetFPState() with an invalid state pointer
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsGetFPState(kIndicators[i].id, NULL);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     }
 
     // Step 05: Call dsSetFPState() and loop through the indicators from the diff of kIndicators and dsFPDIndicator_t 
@@ -1010,7 +993,7 @@ void test_l1_dsFPD_negative_dsGetFPState (void)
         if (!isValidIndicator)
         {
             result = dsGetFPState((dsFPDIndicator_t)i, &state);
-            DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+            UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
         }
     }
 
@@ -1065,7 +1048,7 @@ void test_l1_dsFPD_positive_dsSetFPColor (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
 
         dsFPDColorConfig_t *colors = kIndicators[i].supportedColors;
 
@@ -1073,7 +1056,7 @@ void test_l1_dsFPD_positive_dsSetFPColor (void)
         for (int j = 0; colors[j].color; ++j) 
         {
             result = dsSetFPColor(kIndicators[i].id, colors[j].color);
-            DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+            UT_ASSERT_EQUAL(result, dsERR_NONE);
         }
     }
 
@@ -1144,7 +1127,7 @@ void test_l1_dsFPD_negative_dsSetFPColor (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
 
         dsFPDColorConfig_t *colors = kIndicators[i].supportedColors;
         for (int j = 0; j < sizeof(allColors)/sizeof(allColors[0]); ++j)
@@ -1163,7 +1146,7 @@ void test_l1_dsFPD_negative_dsSetFPColor (void)
             if (!isSupported)
             {
                 result = dsSetFPColor(kIndicators[i].id, allColors[j]);
-                DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+                UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
             }
             
         }
@@ -1171,19 +1154,19 @@ void test_l1_dsFPD_negative_dsSetFPColor (void)
 
     // Step 05: Call dsSetFPColor() with an invalid indicator
     result = dsSetFPColor(dsFPD_INDICATOR_MAX, allColors[0]);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 06: Set all valid indicators to dsFPD_STATE_OFF using dsSetFPState()
     // Step 07: Call dsSetFPColor() with all indicators when FPD state is OFF
     for (int i = 0; i < sizeof(kIndicators) / sizeof(kIndicators[0]); ++i)
     {
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_OFF);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
 
         dsFPDColorConfig_t *colors = kIndicators[i].supportedColors;
 
         result = dsSetFPColor(kIndicators[i].id, colors[0].color);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+        UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
         
     }
    
@@ -1243,13 +1226,13 @@ void test_l1_dsFPD_positive_dsGetFPColor (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         dsFPDColor_t previousColor;
         result = dsGetFPColor(kIndicators[i].id, &previousColor);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsGetFPColor(kIndicators[i].id, &retrievedColor);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(retrievedColor, previousColor);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(retrievedColor, previousColor);
     }
 
     // Step 05: Terminate with dsFPTerm()
@@ -1309,14 +1292,14 @@ void test_l1_dsFPD_negative_dsGetFPColor (void)
     {
         UT_LOG("\n In %s , Indicator: [%d]\n", __FUNCTION__, kIndicators[i].id);
         result = dsSetFPState(kIndicators[i].id, dsFPD_STATE_ON);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
         result = dsGetFPColor(kIndicators[i].id, NULL);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+        UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     }
 
     // Step 05: Call dsGetFPColor() with an invalid eIndicator value
     result = dsGetFPColor(dsFPD_INDICATOR_MAX, &retrievedColor);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 06: Set all valid indicators to dsFPD_STATE_OFF using dsSetFPState()
     disableFPDIndicators();
@@ -1325,7 +1308,7 @@ void test_l1_dsFPD_negative_dsGetFPColor (void)
     for (int i = 0; i < dsFPD_INDICATOR_MAX; ++i)
     {
         result = dsGetFPColor(kIndicators[i].id, &retrievedColor);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+        UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
     }
 
     // Step 08: Terminate with dsFPTerm()
@@ -1376,7 +1359,7 @@ void test_l1_dsFPD_positive_dsSetFPDMode (void)
     for (dsFPDMode_t mode = dsFPD_MODE_ANY; mode < dsFPD_MODE_MAX; ++mode)
     {
         result = dsSetFPDMode(mode);
-        DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+        UT_ASSERT_EQUAL(result, dsERR_NONE);
     }
 
     // Step 04: Terminate using dsFPTerm()
@@ -1424,7 +1407,7 @@ void test_l1_dsFPD_negative_dsSetFPDMode (void)
 
     // Step 03: Call dsSetFPDMode() with an invalid parameter
     result = dsSetFPDMode(dsFPD_MODE_MAX);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 04: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -1474,27 +1457,27 @@ void test_l1_dsFPD_positive_dsSetFPTime (void)
 
     // Step 02: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsSetFPTime() with valid parameters for 24-hour format
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 14, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPTime() with valid parameters for 12-hour format
     result = dsSetFPTime(dsFPD_TIME_12_HOUR, 2, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Call dsSetFPTime() with valid parameters for 24-hour format
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 14, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 07: Call dsSetFPTime() with valid parameters for 12-hour format
     result = dsSetFPTime(dsFPD_TIME_12_HOUR, 2, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 08: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1553,49 +1536,49 @@ void test_l1_dsFPD_negative_dsSetFPTime (void)
 
     // Step 04: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Steps 05-08: Validate invalid parameter handling
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 25, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 14, 60);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     result = dsSetFPTime(dsFPD_TIME_12_HOUR, 13, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     result = dsSetFPTime(dsFPD_TIME_12_HOUR, 2, 60);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 09: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Steps 10-13: Validate invalid parameter handling again
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 25, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 14, 60);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     result = dsSetFPTime(dsFPD_TIME_12_HOUR, 13, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     result = dsSetFPTime(dsFPD_TIME_12_HOUR, 2, 60);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 14: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 15: Call dsSetFPTime() with valid parameters for 24-hour format
     result = dsSetFPTime(dsFPD_TIME_24_HOUR, 14, 30);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 16: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 17: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1644,19 +1627,19 @@ void test_l1_dsFPD_positive_dsSetFPText (void)
 
     // Step 02: Call dsSetFPDMode() with a valid parameter for TEXT mode
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsSetFPText() with valid text for TEXT mode
     result = dsSetFPText("HELLO");
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPDMode() with a valid parameter for ANY mode
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsSetFPText() with valid text for ANY mode
     result = dsSetFPText("HELLO");
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1711,39 +1694,39 @@ void test_l1_dsFPD_negative_dsSetFPText (void)
 
     // Step 03: Call dsSetFPDMode() with TEXT mode
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPText() with NULL pointer
     result = dsSetFPText(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Call dsSetFPText() with text longer than 10 characters
     result = dsSetFPText("LONGTEXTHER");
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 06: Call dsSetFPDMode() with ANY mode
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 07: Call dsSetFPText() with NULL pointer in ANY mode
     result = dsSetFPText(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 08: Call dsSetFPText() with text longer than 10 characters in ANY mode
     result = dsSetFPText("LONGTEXTHER");
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 09: Call dsSetFPDMode() with CLOCK mode
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 10: Call dsSetFPText() with valid text in CLOCK mode
     result = dsSetFPText("HELLO");
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 11: Call dsSetFPDMode() back to TEXT mode
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 12: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1791,19 +1774,19 @@ void test_l1_dsFPD_positive_dsSetFPTextBrightness(void)
 
     // Step 02: Call dsSetFPDMode() with TEXT mode
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsSetFPTextBrightness() with valid eIndicator and eBrightness for TEXT mode
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_TEXT, 70);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPDMode() with ANY mode
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsSetFPTextBrightness() with valid eIndicator and eBrightness for ANY mode
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_TEXT, 70);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1858,39 +1841,39 @@ void test_l1_dsFPD_negative_dsSetFPTextBrightness(void)
 
     // Step 03: Call dsSetFPDMode() with TEXT mode
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPTextBrightness() with invalid eBrightness (out of range)
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_TEXT, 110);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Call dsSetFPTextBrightness() with invalid indicator
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_MAX, 50);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 06: Call dsSetFPDMode() with ANY mode
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 07: Call dsSetFPTextBrightness() with invalid eBrightness for ANY mode
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_TEXT, 110);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 08: Call dsSetFPTextBrightness() with invalid indicator for ANY mode
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_MAX, 50);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 09: Call dsSetFPDMode() with CLOCK mode
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 10: Call dsSetFPTextBrightness() with valid parameters for CLOCK mode
     result = dsSetFPTextBrightness(dsFPD_TEXTDISP_TEXT, 70);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 11: Call dsSetFPDMode() with TEXT mode again
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 12: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1939,14 +1922,14 @@ void test_l1_dsFPD_positive_dsGetFPTextBrightness(void)
 
     // Step 02: Call dsGetFPTextBrightness() with valid eIndicator
     result = dsGetFPTextBrightness(dsFPD_TEXTDISP_TEXT, &brightness1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsGetFPTextBrightness() with valid eIndicator again
     result = dsGetFPTextBrightness(dsFPD_TEXTDISP_TEXT, &brightness2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Compare the results from step 3/4 and make sure they're the same
-    DS_ASSERT_AUTO_TERM_NUMERICAL(brightness1, brightness2);
+    UT_ASSERT_EQUAL(brightness1, brightness2);
 
     // Step 05: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -1995,11 +1978,11 @@ void test_l1_dsFPD_negative_dsGetFPTextBrightness(void)
 
     // Step 03: Call dsGetFPTextBrightness() with NULL for eBrightness
     result = dsGetFPTextBrightness(dsFPD_TEXTDISP_TEXT, NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 04: Call dsGetFPTextBrightness() with invalid indicator
     result = dsGetFPTextBrightness(dsFPD_TEXTDISP_MAX, NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -2051,27 +2034,27 @@ void test_l1_dsFPD_positive_dsFPEnableCLockDisplay(void)
 
     // Step 02: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Enable clock display using dsFPEnableCLockDisplay()
     result = dsFPEnableCLockDisplay(1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Disable clock display using dsFPEnableCLockDisplay()
     result = dsFPEnableCLockDisplay(0);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Enable clock display using dsFPEnableCLockDisplay()
     result = dsFPEnableCLockDisplay(1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 07: Disable clock display using dsFPEnableCLockDisplay()
     result = dsFPEnableCLockDisplay(0);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 08: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -2126,35 +2109,35 @@ void test_l1_dsFPD_negative_dsFPEnableCLockDisplay(void)
 
     // Step 03: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsFPEnableCLockDisplay() with invalid value for enable
     result = dsFPEnableCLockDisplay(2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Call dsFPEnableCLockDisplay() with invalid value for enable
     result = dsFPEnableCLockDisplay(-1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 06: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 07: Call dsFPEnableCLockDisplay() with invalid value for enable
     result = dsFPEnableCLockDisplay(2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 08: Call dsFPEnableCLockDisplay() with invalid value for enable
     result = dsFPEnableCLockDisplay(-1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 09: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 10: Call dsFPEnableCLockDisplay() with invalid value for enable
     result = dsFPEnableCLockDisplay(1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 11: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -2202,22 +2185,22 @@ void test_l1_dsFPD_positive_dsSetFPScroll(void)
 
     // Step 02: Call dsSetFPScroll() for horizontal scrolling with valid parameters
     result = dsSetFPScroll(1000, 5, 0);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     // Wait or observer function might be necessary to give testers time to see the display scrolling.
 
     // Step 03: Call dsSetFPScroll() for vertical scrolling with valid parameters
     result = dsSetFPScroll(1000, 0, 5);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     // Wait or observer function might be necessary to give testers time to see the display scrolling.
 
     // Step 04: Call dsSetFPScroll() with minimum valid parameters for quick scrolling
     result = dsSetFPScroll(100, 1, 0);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     // Wait or observer function might be necessary to give testers time to see the display scrolling.
 
     // Step 05: Call dsSetFPScroll() with minimum valid parameters for quick scrolling
     result = dsSetFPScroll(100, 0, 1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     // Wait or observer function might be necessary to give testers time to see the display scrolling.
 
     // Step 06: Terminate using dsFPTerm()
@@ -2266,11 +2249,11 @@ void test_l1_dsFPD_negative_dsSetFPScroll(void)
 
     // Step 03: Call dsSetFPScroll() with invalid value for uScrollHoldOnDur
     result = dsSetFPScroll(0, 5, 0);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 04: Call dsSetFPScroll() with both horizontal and vertical scroll iterations
     result = dsSetFPScroll(1000, 5, 5);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 05: Terminate with dsFPTerm()
     result = dsFPTerm();
@@ -2320,27 +2303,27 @@ void test_l1_dsFPD_positive_dsSetFPTimeFormat(void)
 
     // Step 02: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsSetFPTimeFormat() with a valid 12-hour format
     result = dsSetFPTimeFormat(dsFPD_TIME_12_HOUR);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPTimeFormat() with a valid 24-hour format
     result = dsSetFPTimeFormat(dsFPD_TIME_24_HOUR);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Call dsSetFPTimeFormat() with a valid 12-hour format
     result = dsSetFPTimeFormat(dsFPD_TIME_12_HOUR);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 07: Call dsSetFPTimeFormat() with a valid 24-hour format
     result = dsSetFPTimeFormat(dsFPD_TIME_24_HOUR);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 08: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2393,31 +2376,31 @@ void test_l1_dsFPD_negative_dsSetFPTimeFormat(void)
 
     // Step 03: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsSetFPTimeFormat() with an invalid time format
     result = dsSetFPTimeFormat(dsFPD_TIME_MAX);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_ANY);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Call dsSetFPTimeFormat() with an invalid time format
     result = dsSetFPTimeFormat(dsFPD_TIME_MAX);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 07: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 08: Call dsSetFPTimeFormat() with a valid 12-hour format
     result = dsSetFPTimeFormat(dsFPD_TIME_12_HOUR);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 09: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 10: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2467,24 +2450,24 @@ void test_l1_dsFPD_positive_dsGetFPTimeFormat(void)
 
     // Step 02: Call dsSetFPDMode() with a valid parameter
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsSetFPTimeFormat() with a valid 12-hour format
     setTimeFormat = dsFPD_TIME_12_HOUR;
     result = dsSetFPTimeFormat(setTimeFormat);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsGetFPTimeFormat() to retrieve the set time format
     result = dsGetFPTimeFormat(&initialTimeFormat);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsGetFPTimeFormat() to retrieve the new time format
     result = dsGetFPTimeFormat(&retrievedTimeFormat);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Compare the results to make sure the returned values are the same
-    DS_ASSERT_AUTO_TERM_NUMERICAL(initialTimeFormat, retrievedTimeFormat);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(setTimeFormat, retrievedTimeFormat);
+    UT_ASSERT_EQUAL(initialTimeFormat, retrievedTimeFormat);
+    UT_ASSERT_EQUAL(setTimeFormat, retrievedTimeFormat);
 
     // Step 07: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2536,23 +2519,23 @@ void test_l1_dsFPD_negative_dsGetFPTimeFormat(void)
 
     // Step 03: Call dsSetFPDMode() with a valid parameter for CLOCK mode
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsGetFPTimeFormat() with NULL parameter
     result = dsGetFPTimeFormat(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Call dsSetFPDMode() with a valid parameter for TEXT mode
     result = dsSetFPDMode(dsFPD_MODE_TEXT);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Call dsGetFPTimeFormat() to retrieve the set time format in TEXT mode
     result = dsGetFPTimeFormat(&timeFormat);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_OPERATION_NOT_SUPPORTED);
+    UT_ASSERT_EQUAL(result, dsERR_OPERATION_NOT_SUPPORTED);
 
     // Step 07: Call dsSetFPDMode() with a valid parameter for CLOCK mode
     result = dsSetFPDMode(dsFPD_MODE_CLOCK);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 08: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2602,14 +2585,14 @@ void test_l1_dsFPD_positive_dsFPGetSupportedLEDStates(void)
 
     // Step 02: Retrieve the supported LED states for the first time using dsFPGetSupportedLEDStates()
     result = dsFPGetSupportedLEDStates(&states1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Retrieve the supported LED states for the second time using dsFPGetSupportedLEDStates()
     result = dsFPGetSupportedLEDStates(&states2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Compare the values retrieved from states1 and states2
-    DS_ASSERT_AUTO_TERM_NUMERICAL(states1, states2);
+    UT_ASSERT_EQUAL(states1, states2);
 
     // Step 05: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2658,7 +2641,7 @@ void test_l1_dsFPD_negative_dsFPGetSupportedLEDStates(void)
 
     // Step 03: Call dsFPGetSupportedLEDStates() with a null pointer
     result = dsFPGetSupportedLEDStates(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 04: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2709,14 +2692,14 @@ void test_l1_dsFPD_positive_dsFPSetLEDState(void)
 
     // Retrieve supported LED states
     result = dsFPGetSupportedLEDStates(&supportedLEDStates);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 03: Call dsFPSetLEDState() and loop through all supported LED states
     for (ledState = 0; ledState < dsFPD_LED_DEVICE_MAX; ledState++)
     {
         if(supportedLEDStates & (1<<ledState)){
             result = dsFPSetLEDState(ledState);
-            DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+            UT_ASSERT_EQUAL(result, dsERR_NONE);
         }
     }
 
@@ -2770,7 +2753,7 @@ void test_l1_dsFPD_negative_dsFPSetLEDState(void)
 
     // Step 04: Call dsFPSetLEDState() with an invalid LED state
     result = dsFPSetLEDState(dsFPD_LED_DEVICE_MAX);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2824,18 +2807,18 @@ void test_l1_dsFPD_positive_dsFPGetLEDState(void)
 
     // Step 03: Call dsFPSetLEDState() with a valid value
     result = dsFPSetLEDState(dsFPD_LED_DEVICE_ACTIVE);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 04: Call dsFPGetLEDState() with a valid parameter
     result = dsFPGetLEDState(&ledState1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 05: Call dsFPGetLEDState() with a valid parameter again
     result = dsFPGetLEDState(&ledState2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
 
     // Step 06: Compare the returned values from steps 3/4
-    DS_ASSERT_AUTO_TERM_NUMERICAL(ledState1, ledState2);
+    UT_ASSERT_EQUAL(ledState1, ledState2);
 
     // Step 07: Terminate using dsFPTerm()
     result = dsFPTerm();
@@ -2888,7 +2871,7 @@ void test_l1_dsFPD_negative_dsFPGetLEDState(void)
 
     // Step 04: Call dsFPGetLEDState() with a NULL pointer
     result = dsFPGetLEDState(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
 
     // Step 05: Terminate using dsFPTerm()
     result = dsFPTerm();

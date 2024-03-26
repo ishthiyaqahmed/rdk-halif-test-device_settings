@@ -79,22 +79,6 @@
 static int gTestGroup = 1;
 static int gTestID = 1;
 
-#define DS_ASSERT_AUTO_TERM_NUMERICAL(value, comparison){\
-    if(value != comparison){\
-        UT_LOG("\n In %s Comparison: [%d = %d]\n", __FUNCTION__, value, comparison);\
-        dsHostTerm();\
-        UT_FAIL();\
-    }\
-}\
-
-#define DS_ASSERT_AUTO_TERM_STRING(value, comparison){\
-    if(strcmp(value, comparison) != 0){\
-        UT_LOG("\n In %s Comparison: [%s = %s]\n", __FUNCTION__, value, comparison);\
-        dsHostTerm();\
-        UT_FAIL();\
-    }\
-}\
-
 /**
  * @brief Ensure dsHostInit() returns correct error codes during positive scenarios
  * 
@@ -174,7 +158,7 @@ void test_l1_dsHost_negative_dsHostInit(void) {
 
     // Step 02: Call dsHostInit() Attempt to initialize dsHost again
     result = dsHostInit();
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_ALREADY_INITIALIZED);
+    UT_ASSERT_EQUAL(result, dsERR_ALREADY_INITIALIZED);
     UT_LOG("Step 02: Attempt to initialize dsHost again -> Expected: dsERR_ALREADY_INITIALIZED, Got: %d\n", result);
 
     // Step 03: Call dsHostTerm() Terminate dsHost
@@ -313,12 +297,12 @@ void test_l1_dsHost_positive_dsGetCPUTemperature(void) {
 
     // Step 02: dsGetCPUTemperature() Call with valid pointer to store temperature
     result = dsGetCPUTemperature(&temperatureValue);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     UT_LOG("Step 02: Fetch CPU Temperature (1st time) -> Expected: dsERR_NONE, Got: %d\n", result);
 
     // Step 03: dsGetCPUTemperature() Call with valid pointer to store temperature again
     result = dsGetCPUTemperature(&temperatureValue);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     UT_LOG("Step 03: Fetch CPU Temperature (2nd time) -> Expected: dsERR_NONE, Got: %d\n", result);
 
     // Step 04: dsHostTerm() Terminate dsHost
@@ -369,7 +353,7 @@ void test_l1_dsHost_negative_dsGetCPUTemperature(void) {
 
     // Step 03: dsGetCPUTemperature() Call with NULL pointer
     result = dsGetCPUTemperature(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     UT_LOG("Step 03: Fetch CPU Temperature with NULL pointer -> Expected: dsERR_INVALID_PARAM, Got: %d\n", result);
 
     // Step 04: dsHostTerm() Terminate dsHost
@@ -420,16 +404,16 @@ void test_l1_dsHost_positive_dsGetSocIDFromSDK(void) {
 
     // Step 02: dsGetSocIDFromSDK() Call with a valid pointer to store the SOC ID
     result = dsGetSocIDFromSDK(socID1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     UT_LOG("Step 02: Fetch SOC ID (1st time) -> Expected: dsERR_NONE, Got: %d\n", result);
 
     // Step 03: dsGetSocIDFromSDK() Call with a valid pointer to store the SOC ID again
     result = dsGetSocIDFromSDK(socID2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     UT_LOG("Step 03: Fetch SOC ID (2nd time) -> Expected: dsERR_NONE, Got: %d\n", result);
 
     // Step 04: Compare return values from step 2/3 to ensure they are the same
-    DS_ASSERT_AUTO_TERM_NUMERICAL(strcmp(socID1, socID2),0);
+    UT_ASSERT_EQUAL(strcmp(socID1, socID2),0);
     UT_LOG("Step 04: Compare SOC IDs from Step 2 and Step 3 -> Expected: Match, Result: Matched\n");
 
     // Step 05: dsHostTerm() Terminate dsHost
@@ -481,7 +465,7 @@ void test_l1_dsHost_negative_dsGetSocIDFromSDK(void) {
 
     // Step 03: dsGetSocIDFromSDK() Call with NULL pointer
     result = dsGetSocIDFromSDK(NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     UT_LOG("Step 03: Fetch SOC ID with NULL pointer -> Expected: dsERR_INVALID_PARAM, Got: %d\n", result);
 
     // Step 04: dsHostTerm() Terminate dsHost
@@ -534,17 +518,17 @@ void test_l1_dsHost_positive_dsGetHostEDID(void) {
 
     // Step 02: dsGetHostEDID() Call with valid pointers for edid and length
     result = dsGetHostEDID(edid1, &length1);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     UT_LOG("Step 02: Fetch Host EDID (1st time) -> Expected: dsERR_NONE, Got: %d\n", result);
 
     // Step 03: dsGetHostEDID() Call with valid pointers for edid and length again
     result = dsGetHostEDID(edid2, &length2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_NONE);
+    UT_ASSERT_EQUAL(result, dsERR_NONE);
     UT_LOG("Step 03: Fetch Host EDID (2nd time) -> Expected: dsERR_NONE, Got: %d\n", result);
 
     // Step 04: Compare EDIDs from step 2/3 and verify they are the same
-    DS_ASSERT_AUTO_TERM_NUMERICAL(length1, length2);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(memcmp(edid1, edid2, length1), 0);
+    UT_ASSERT_EQUAL(length1, length2);
+    UT_ASSERT_EQUAL(memcmp(edid1, edid2, length1), 0);
     UT_LOG("Step 04: Compare EDIDs from Step 2 and Step 3 -> Expected: Match, Result: Matched\n");
 
     // Step 05: dsHostTerm() Terminate dsHost
@@ -597,12 +581,12 @@ void test_l1_dsHost_negative_dsGetHostEDID(void) {
 
     // Step 03: dsGetHostEDID() Call with NULL pointers
     result = dsGetHostEDID(edid, NULL);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     UT_LOG("Step 03: Fetch Host EDID with NULL pointers -> Expected: dsERR_INVALID_PARAM, Got: %d\n", result);
 
     // Step 04: dsGetHostEDID() Call with NULL pointers
     result = dsGetHostEDID(NULL, &length);
-    DS_ASSERT_AUTO_TERM_NUMERICAL(result, dsERR_INVALID_PARAM);
+    UT_ASSERT_EQUAL(result, dsERR_INVALID_PARAM);
     UT_LOG("Step 03: Fetch Host EDID with NULL pointers -> Expected: dsERR_INVALID_PARAM, Got: %d\n", result);
 
     // Step 05: dsHostTerm() Terminate dsHost

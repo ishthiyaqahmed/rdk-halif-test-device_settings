@@ -1,10 +1,4 @@
-# HdmiIn Test Document
-
-## Version History
-
-| Date(DD/MM/YY) | Comment       | Version |
-| -------------- | ------------- | ------- |
-| 27/03/2024     | First Release | 1.0.0   |
+# HdmiIn High Level Test Specification Document
 
 ## Table of Contents
 
@@ -64,9 +58,9 @@ High level overview:
 
 ## Get Number of Inputs
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the function returns the expected `HDMI` Input ports.|Y|N|Y|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the function returns the expected `HDMI` Input ports.|dsHdmiInGetNumberOfInputs|Y|N|Y|Y|
 
 ### Test Startup Requirement - Get Number of Inputs
 
@@ -82,10 +76,10 @@ None
 
 ## Get the Input Status
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify the status of the `HDMI` Input by ensuring it is in disable status.|Y|N|Y|Y|
-|Verify the status of the `HDMI` Input by ensuring it is enabled/disabled, connected to the source, and that the `HDMI` input port is active.|N|Y|Y|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify the status of the `HDMI` Input by ensuring it is in disable status.|dsHdmiInGetStatus|Y|N|Y|Y|
+|Verify the status of the `HDMI` Input by ensuring it is enabled/disabled, connected to the source, and that the `HDMI` input port is active.|dsHdmiInGetStatus|N|Y|Y|Y|
 
 ### Test Startup Requirement - Get the Input Status
 
@@ -101,12 +95,12 @@ The handling of connecting and disconnecting source devices in the `HDMI` Input 
 
 ## Set the `HDMI` port
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the function successfully sets the specified `HDMI` Input port as active for presentation and check the port information using "Get status".|Y|Y|Y|Y|
-|Evaluate the function's response when called with a port ID that is already selected as active, ensuring it does not introduce any unintended changes.|N|Y|Y|Y|
-|Set the Audio Mix to be enable and disable|N|Y|N|Y|
-|Verify the `HDMI` input with the video plane in both primary and secondary. Additionally, validate the topmost flag.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the function successfully sets the specified `HDMI` Input port as active for presentation and check the port information using "Get status".|dsHdmiInSelectPort|Y|Y|Y|Y|
+|Evaluate the function's response when called with a port ID that is already selected as active, ensuring it does not introduce any unintended changes.|dsHdmiInSelectPort|N|Y|Y|Y|
+|Set the Audio Mix to be enable and disable|dsHdmiInSelectPort|N|Y|N|Y|
+|Verify the `HDMI` input with the video plane in both primary and secondary. Additionally, validate the topmost flag.|dsHdmiInSelectPort|N|Y|N|Y|
 
 ### Test Startup Requirement - Set the `HDMI` port
 
@@ -122,9 +116,9 @@ The Control Plane must monitor the external device (Video analyzer) to detect an
 
 ## Scale the `HDMI` Input Video
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the function successfully scales the `HDMI` input video when valid coordinates and dimensions are provided within the current resolution limits. Based on video resolution need to check whether the coordinates are in range|N|Y|Y|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the function successfully scales the `HDMI` input video when valid coordinates and dimensions are provided within the current resolution limits. Based on video resolution need to check whether the coordinates are in range|dsHdmiInScaleVideo|N|Y|Y|Y|
 
 ### Test Startup Requirement - Scale the `HDMI` Input Video
 
@@ -140,9 +134,9 @@ Control plane to validate the coordinates and dimensions by the video analyzers.
 
 ## Select Zoom Mode
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the function successfully updates the video zoom on the active `HDMI` input using the provided zoom mode|N|Y|Y|N|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the function successfully updates the video zoom on the active `HDMI` input using the provided zoom mode|dsHdmiInSelectZoomMode|N|Y|Y|N|
 
 ### Test Startup Requirement - Select Zoom Mode
 
@@ -158,9 +152,9 @@ Changing the zoom modes by the Control Plane.
 
 ## Get Current Video Mode
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the function successfully updates the current `HDMI` input video modes like Pixel resolution, frame rate and interlaced information of the active port|N|Y|Y|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the function successfully updates the current `HDMI` input video modes like Pixel resolution, frame rate and interlaced information of the active port|dsHdmiInGetCurrentVideoMode|N|Y|Y|Y|
 
 ### Test Startup Requirement - Get Current Video Mode
 
@@ -176,11 +170,11 @@ None
 
 ## Callback for connection Status
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function properly notifies the application when a `HDMI` Input port is connected or disconnected.|N|Y|Y|Y|
-|Validate that the callback function updates the isPortConnected status correctly based on the connection state provided.|N|Y|Y|Y|
-|Verify that the callback function properly updates the isPresented status in ::dsHdmiInStatus_t if the connected port is active and presents video after being connected.|N|Y|Y|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function properly notifies the application when a `HDMI` Input port is connected or disconnected.|dsHdmiInRegisterConnectCB|N|Y|Y|Y|
+|Validate that the callback function updates the isPortConnected status correctly based on the connection state provided.|dsHdmiInRegisterConnectCB|N|Y|Y|Y|
+|Verify that the callback function properly updates the isPresented status in ::dsHdmiInStatus_t if the connected port is active and presents video after being connected.|dsHdmiInRegisterConnectCB|N|Y|Y|Y|
 
 ### Test Startup Requirement - Callback for connection Status
 
@@ -196,10 +190,10 @@ The handling of connecting and disconnecting source devices in the `HDMI` Input 
 
 ## Callback for Signal Change
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function properly handles different signal statuses (e.g., NoSignal, UnstableSignal, NotSupportedSignal, StableSignal) and updates the application accordingly.|N|Y|N|Y|
-|Validate that the callback function updates the sigStatus parameter correctly based on the signal status provided.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function properly handles different signal statuses (e.g., NoSignal, UnstableSignal, NotSupportedSignal, StableSignal) and updates the application accordingly.|dsHdmiInRegisterSignalChangeCB|N|Y|N|Y|
+|Validate that the callback function updates the sigStatus parameter correctly based on the signal status provided.|dsHdmiInRegisterSignalChangeCB|N|Y|N|Y|
 
 ### Test Startup Requirement - Callback for Signal Change
 
@@ -216,11 +210,11 @@ Provide resolution changes or configurations changes on the connected device tha
 
 ## Callback for Status Change
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function properly notifies the application of the `HDMI` Input status change event.|N|Y|N|Y|
-|Validate that the callback function updates the inputStatus parameter correctly based on the status change provided.|N|Y|N|Y|
-|Verify that the callback function properly triggers whenever the dsHdmiInStatus_t is updated|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function properly notifies the application of the `HDMI` Input status change event.|dsHdmiInRegisterStatusChangeCB|N|Y|N|Y|
+|Validate that the callback function updates the inputStatus parameter correctly based on the status change provided.|dsHdmiInRegisterStatusChangeCB|N|Y|N|Y|
+|Verify that the callback function properly triggers whenever the dsHdmiInStatus_t is updated|dsHdmiInRegisterStatusChangeCB|N|Y|N|Y|
 
 ### Test Startup Requirement - Callback for Status Change
 
@@ -236,9 +230,9 @@ The handling of connecting and disconnecting source devices in the `HDMI` Input 
 
 ## Callback for Video Mode Change
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function properly notifies the application whenever there is resolution and other video mode changes.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function properly notifies the application whenever there is resolution and other video mode changes.|dsHdmiInRegisterVideoModeUpdateCB|N|Y|N|Y|
 
 ### Test Startup Requirement - Callback for Video Mode Change
 
@@ -254,9 +248,9 @@ Changing of the video resolution by control Plane.
 
 ## Callback for `ALLM` mode change
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function properly notifies the application whenever there is `ALLM` mode and Dolby Vison Mode change.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function properly notifies the application whenever there is `ALLM` mode and Dolby Vison Mode change.|dsHdmiInRegisterAllmChangeCB|N|Y|N|Y|
 
 ### Test Startup Requirement - Callback for `ALLM` mode change
 
@@ -272,9 +266,9 @@ Changing of the `ALLM` mode by control Plane.
 
 ## Callback for AV Latency Change
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function notifies the `HDMI` input Audio and Video latency within its Max and Min ranges.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function notifies the `HDMI` input Audio and Video latency within its Max and Min ranges.|dsHdmiInRegisterAVLatencyChangeCB|N|Y|N|Y|
 
 ### Test Startup Requirement - Callback for AV Latency Change
 
@@ -290,9 +284,9 @@ Control Plane changes the AV latency
 
 ## Callback for AVI Content Type Change
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify that the callback function properly notifies the application whenever there is a change in the AVI content type.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify that the callback function properly notifies the application whenever there is a change in the AVI content type.|dsHdmiInRegisterAviContentTypeChangeCB|N|Y|N|Y|
 
 ### Test Startup Requirement - Callback for AVI Content Type Change
 
@@ -308,9 +302,9 @@ Changing AVI content type by control Plane.
 
 ## Check `HDMI` ARC Port
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Verify whether given port is an `HDMI` ARC port or not.|Y|N|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Verify whether given port is an `HDMI` ARC port or not.|dsIsHdmiARCPort|Y|N|N|Y|
 
 ### Test Startup Requirement - Check `HDMI` ARC Port
 
@@ -326,11 +320,11 @@ Changing of the port with `HDMI` ARC by control Plane.
 
 ## Set and Get `EDID` Information
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Setting the `EDID` version for a given port|Y|N|N|Y|
-|Get the `EDID` version and length for a given port and compare with the Set value|Y|N|N|Y|
-|This test ensures that the module can accurately retrieve and interpret `EDID` information, providing essential data about the display's capabilities and characteristics.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Setting the `EDID` version for a given port|dsSetEdidVersion|Y|N|N|Y|
+|Get the `EDID` version and length for a given port and compare with the Set value|dsGetEdidVersion, dsGetEDIDBytesInfo|Y|N|N|Y|
+|This test ensures that the module can accurately retrieve and interpret `EDID` information, providing essential data about the display's capabilities and characteristics.|dsGetEdidVersion, dsGetEDIDBytesInfo|N|Y|N|Y|
 
 ### Test Startup Requirement - Set and Get `EDID` Information
 
@@ -346,9 +340,9 @@ None
 
 ## Get `HDMI` `SPD` Info
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Test to get the `HDMI` `SPD` Info. Check whether it gets the spd info frame information properly.|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Test to get the `HDMI` `SPD` Info. Check whether it gets the spd info frame information properly.|dsGetHDMISPDInfo|N|Y|N|Y|
 
 ### Test Startup Requirement - Get `HDMI` `SPD` Info
 
@@ -364,9 +358,9 @@ None
 
 ## Get Supported Game Feature List
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Make sure that the functionality can list and get the count of all the game features that are supported.|Y|N|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Make sure that the functionality can list and get the count of all the game features that are supported.|dsGetSupportedGameFeaturesList|Y|N|N|Y|
 
 ### Test Startup Requirement - Get Supported Game Feature List
 
@@ -382,9 +376,9 @@ None
 
 ## Get AV latency 
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Test verifies to get the current AV latency connected when there is a change in the AV content. eg., Shifting from FilmMaker mode to any other mode|N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Test verifies to get the current AV latency connected when there is a change in the AV content. eg., Shifting from FilmMaker mode to any other mode|dsGetAVLatency|N|Y|N|Y|
 
 ### Test Startup Requirement - Get AV latency
 
@@ -400,9 +394,9 @@ None.
 
 ## Get `ALLM` Status 
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Gets the `ALLM` status of the designated `HDMI` input port. The status information indicates whether `ALLM` is enabled or disabled|Y|N|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Gets the `ALLM` status of the designated `HDMI` input port. The status information indicates whether `ALLM` is enabled or disabled|dsGetAllmStatus|Y|N|N|Y|
 
 ### Test Startup Requirement - Get `ALLM` status
 
@@ -418,10 +412,10 @@ None
 
 ## Get and Set `EDID` to all `ALLM` Support 
 
-|Description|L2|L3|Source|Sink|
-|-----------|--|--|------|----|
-|Set the `ALLM` support to `EDID` Version 2.0. Check by enable and disable the support.|N|Y|N|Y|
-|Get the `ALLM` support to `EDID` Version 2.0. Check whether it is enabled or disabled. |N|Y|N|Y|
+|Description|HAL APIs|L2|L3|Source|Sink|
+|-----------|--------|--|--|------|----|
+|Set the `ALLM` support to `EDID` Version 2.0. Check by enable and disable the support.|dsSetEdid2AllmSupport|N|Y|N|Y|
+|Get the `ALLM` support to `EDID` Version 2.0. Check whether it is enabled or disabled. |dsGetEdid2AllmSupport|N|Y|N|Y|
 
 ### Test Startup Requirement - Get and Set `EDID` to all `ALLM` Support
 

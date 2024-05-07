@@ -8,9 +8,9 @@
 - [Testing Scope](#testing-scope)
   - [Emulator Requirements](#emulator-requirements)
   - [Check the Video port status](#check-the-video-port-status)
-  - [Check Video Content Format and HDR Capability](#check-video-content-format-and-hdr-capability)
-  - [Check Video Resolution](#check-video-resolution)
-  - [HDCP Management](#hdcp-management)
+  - [Check Video Content Format and Resolution](#check-video-content-format-and-resolution)
+  - [Check HDR Capability](#check-hdr-capability)
+  - [HDCP and HDMI Management](#hdcp-and-hdmi-management)
   - [Color Capabilities](#color-capabilities)
 
 ## Acronyms, Terms and Abbreviations
@@ -44,8 +44,8 @@ Interface specification is available here: [dsVideoPort HAL Spec](https://github
 |#|Test Functionality|Description|
 |-|------------------|-----------|
 |1|[Check the Video port status](#check-the-video-port-status)|Check the Video Port Access and Status |
-|2|[Check Video Content Format and HDR Capability](#check-video-content-format-and-hdr-capability)|Check Video content Format and `HDR` Capability|
-|3|[Check Video Resolution](#check-video-resolution)|Check Video resolution|
+|2|[Check Video Content Format and Resolution](#check-video-content-format-and-resolution)|Check Video content Format and Resolution|
+|3|[Check HDR Capability](#check-hdr-capability)|Check `HDR` Capability|
 |4|[HDCP and HDMI Management](#hdcp-and-hdmi-management)|Check `HDCP` and `HDMI` Status|
 |5|[Color Capabilities](#color-capabilities)|Check the color capabilities|
 
@@ -93,48 +93,48 @@ Playback the pre-define streams
 
 Unplug the Video port,Verify the surround mode
 
-### Check Video Content Format and HDR Capability
+### Check Video Content Format and Resolution
 
 |Test Functionality|Description|HAL API's|L2|L3|Source|Sink|
 |------------------|-----------|---------|--|--|------|----|
 |Check Video Format Content and HDR Capability|Notify an event when the list of video Format changes|dsVideoFormatUpdateRegisterCB()|`NA`|`Y`|`Y`|`Y`|
-||Get the HDR capabilities and status|dsIsOutputHDR(), dsGetTVHDRCapabilities()|`Y`|`NA`|`Y`|`Y`|
+||Set/Get Video port properties like pixel resolution, Aspect ratio, Stereo Scopic modes, frame rates and scan modes|dsSetResolution(), dsGetResolution()|`Y`|`Y`|`Y`|`NA`|
+||Get Video port properties like pixel resolution, Aspect ratio, Stereo Scopic modes, frame rates and scan modes and verify|dsGetResolution()|`Y`|`NA`|`NA`|`Y`|
+||Check Video port properties with external Analyzer|dsSetResolution(), dsGetResolution()|`NA`|`Y`|`Y`|`NA`|
+
+#### Test Startup Requirement-Check Video Content Format and Resolution
+
+Playback the pre-define streams
+
+#### Emulator Requirements-Check Video Content Format and Resolution
+
+[Emulator Requirements](#emulator-requirements)
+
+#### Control Plane Requirements-Check Video Content Format and Resolution
+
+Check the port output resolutions and Verify the AspectRatio,video Stereo Scopic modes,video Frame rates,interlaced/progressive.
+
+### Check HDR Capability
+
+|Test Functionality|Description|HAL API's|L2|L3|Source|Sink|
+|------------------|-----------|---------|--|--|------|----|
+|Check Resolution with/without playback|Get the HDR capabilities and status|dsIsOutputHDR(), dsGetTVHDRCapabilities()|`Y`|`NA`|`Y`|`Y`|
 ||Set Force Disable 4KSupport with/without playback|dsSetForceHDRMode()|`Y`|`Y`|`Y`|`Y`|
 ||Disable 4KSupport with external analyzer|dsSetForceHDRMode()|`NA`|`Y`|`Y`|`NA`|
 ||Reset the video output to SDR with/without playback|dsResetOutputToSDR()|`NA`|`Y`|`Y`|`Y`|
 ||Reset the video output to SDR with external analyzer|dsResetOutputToSDR()|`NA`|`Y`|`Y`|`NA`|
 
-#### Test Startup Requirement-Check Video Content Format and HDR Capability
+#### Test Startup Requirement-Check HDR Capability
 
 Playback the pre-define streams
 
-#### Emulator Requirements-Check Video Content Format and HDR Capability
+#### Emulator Requirements-Check HDR Capability
 
 [Emulator Requirements](#emulator-requirements)
 
-#### Control Plane Requirements-Check Video Content Format and HDR Capability
+#### Control Plane Requirements-Check HDR Capability
 
-Check the port output resolutions and HDR with analyzer
-
-### Check Video Resolution
-
-|Test Functionality|Description|HAL API's|L2|L3|Source|Sink|
-|------------------|-----------|---------|--|--|------|----|
-|Check Resolution with/without playback|Set/Get Video port properties like pixel resolution, Aspect ratio, Stereo Scopic modes, frame rates and scan modes|dsSetResolution(), dsGetResolution()|`Y`|`Y`|`Y`|`NA`|
-||Get Video port properties like pixel resolution, Aspect ratio, Stereo Scopic modes, frame rates and scan modes and verify|dsGetResolution()|`Y`|`NA`|`NA`|`Y`|
-||Check Video port properties with external Analyzer|dsSetResolution(), dsGetResolution()|`NA`|`Y`|`Y`|`NA`|
-
-#### Test Startup Requirement-Check Video Resolution
-
-Playback the pre-define streams
-
-#### Emulator Requirements-Check Video Resolution
-
-[Emulator Requirements](#emulator-requirements)
-
-#### Control Plane Requirements-Check Video Resolution
-
-Verify the AspectRatio,video Stereo Scopic modes,video Frame rates,interlaced/progressive.
+Check with HDR analyzer
 
 ### HDCP and HDMI Management
 

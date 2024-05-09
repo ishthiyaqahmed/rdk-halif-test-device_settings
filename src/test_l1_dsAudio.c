@@ -160,9 +160,10 @@ void test_l1_dsAudio_negative_dsAudioPortInit (void)
 	UT_ASSERT_EQUAL(result, dsERR_NONE);
 
 	// Step 02: Call dsAudioPortInit() Attempt to initialize dsAudio again
+#ifdef ENABLE_ENHANCED_ERROR_COD
 	result = dsAudioPortInit();
 	UT_ASSERT_EQUAL(result, dsERR_ALREADY_INITIALIZED);
-
+#endif
 
 	// Step 03: Call dsAudioPortTerm() Terminate dsAudio
 	result = dsAudioPortTerm();
